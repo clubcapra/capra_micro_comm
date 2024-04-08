@@ -2,8 +2,11 @@
 
 #ifdef ARDUINO
     #include <Arduino.h>
-#endif
+#endif // ARDUINO
 
+#ifndef CMD_BUFF_SIZE
+#define CMD_BUFF_SIZE 64
+#endif // CMD_BUFF_SIZE
 
 // Define types with known lengths for encoding
 #ifdef ARDUINO
@@ -17,7 +20,7 @@ using euint64_t = uint64_t;
 using eint64_t  = int64_t;
 using efloat    = float;
 using eboolean  = boolean;
-#endif
+#endif // ARDUINO
 
 
 // Verify type lengths

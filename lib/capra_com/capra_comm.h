@@ -1,5 +1,6 @@
 #pragma once
 
 #include <common.h>
-#include <DataHook.h>
+#include <CommandManager.h>
 
+extern _CommandManager CommandManager;

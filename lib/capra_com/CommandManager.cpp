@@ -62,6 +62,7 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
         }
         mSendCB(output.buffer, output.length);
     }
+    mStatusCode = StatusCode::NONE;
     return true;
 }
 
