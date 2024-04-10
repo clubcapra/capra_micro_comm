@@ -48,3 +48,5 @@ BaseFunction_ptr commands[] = {
     new Function<State, State>(&loopback),
 };
 #define COMMANDS_COUNT 4
+#define MAX_DECODED_SIZE 9
+#define MAX_ENCODED_SIZE 13

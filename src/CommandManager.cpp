@@ -29,24 +29,27 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
         //     return false;
         // }
 
-        // Copy buffer
         const uint8_t* src = buffer;
 
         // Grab command ID
         euint8_t cmdID = *src;
+        DebugVarln(cmdID);
 
         // Verify if ID is possible
         if (cmdID >= mCommandsCount) 
         {
             mStatusCode = StatusCode::CMD_ID_OUT_OF_RANGE;
+            Debugln("Command id out of range");
             return false;
         }
 
+        // Copy buffer
         ++src;
-        for (uint8_t* dst = mInputBuffer; dst < mInputBuffer+length-1; ++src, ++dst)
+        for (uint8_t* dst = mInputBuffer; dst < mInputBuffer+length; ++src, ++dst)
         {
             *dst = *src;
         }
+
 
         // Call command
         BaseFunction* func = mCommands[cmdID];
@@ -58,6 +61,7 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
         if (mSendCB == nullptr) 
         {
             mStatusCode = StatusCode::CALLBACK_NULL;
+            Debugln("Callback null");
             return false;
         }
         mSendCB(output.buffer, output.length);
