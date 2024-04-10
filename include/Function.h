@@ -22,7 +22,7 @@ inline void Function<R, T>::operator()(DataHook& input, DataHook& output)
 {
     T param = input.decode<T>();
     R result = mCmd(param);
-    output.encode(result);
+    output.encode<R>(result);
 }
 
 template<typename R, typename T> inline Function<R, T>::Function(command_t command)

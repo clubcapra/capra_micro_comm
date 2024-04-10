@@ -19,4 +19,4 @@ struct _Locker
     ~_Locker();
 };
 
-#define LOCK(_lock, lockerVar) for (_Locker lockerVar = _Locker(_lock); !lockerVar._init; lockerVar._init = true)
+// #define LOCK(_lock, lockerVar) for (_Locker lockerVar = _Locker(_lock); !lockerVar._init; lockerVar._init = true)
