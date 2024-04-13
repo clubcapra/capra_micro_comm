@@ -33,13 +33,11 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
 
         // Grab command ID
         euint8_t cmdID = *src;
-        DebugVarln(cmdID);
 
         // Verify if ID is possible
         if (cmdID >= mCommandsCount) 
         {
             mStatusCode = StatusCode::CMD_ID_OUT_OF_RANGE;
-            Debugln("Command id out of range");
             return false;
         }
 
@@ -61,7 +59,6 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
         if (mSendCB == nullptr) 
         {
             mStatusCode = StatusCode::CALLBACK_NULL;
-            Debugln("Callback null");
             return false;
         }
         mSendCB(output.buffer, output.length);

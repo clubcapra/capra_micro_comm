@@ -15,13 +15,13 @@ UARTClass& comm = Serial;
 Status ledOn(Void _)
 {
     digitalWrite(LED_BUILTIN, HIGH);
-    return {0};
+    return {};
 }
 
 Status ledOff(Void _)
 {
     digitalWrite(LED_BUILTIN, LOW);
-    return {1};
+    return {};
 }
 
 Status setLedState(State s)
@@ -30,13 +30,18 @@ Status setLedState(State s)
     else return ledOff(Void{});
 }
 
-State loopback(State s)
+UInt8 loopback(UInt8 s)
 {
     digitalWrite(LED_BUILTIN, 0);
     delay(100);
     digitalWrite(LED_BUILTIN, 1);
-    DebugVarln(s.state);
-    return s;
+    DebugVarln(s.value);
+    return {s.value + 1};
+}
+
+State patate(Status s)
+{
+    return {s.statusCode == 0};
 }
 
 void sendCB(uint8_t* buff, size_t length)

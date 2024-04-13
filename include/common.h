@@ -1,8 +1,6 @@
 #pragma once
 
-#ifdef ARDUINO
-    #include <Arduino.h>
-#endif // ARDUINO
+#include <inttypes.h>
 
 #ifndef CMD_BUFF_SIZE
 #define CMD_BUFF_SIZE 64
@@ -19,7 +17,9 @@ using eint32_t      = int32_t;
 using euint64_t     = uint64_t;
 using eint64_t      = int64_t;
 using efloat_t      = float;
-using eboolean_t    = boolean;
+using eboolean_t    = bool;
+
+#include <Arduino.h>
 
 class EmptyStream : public Stream
 {
@@ -68,18 +68,25 @@ inline void debugBytes(uint8_t* b, size_t count)
     }
     debug.println();
 }
-#else
+#else 
+using euint8_t      = uint8_t;
+using eint8_t       = int8_t;
+using euint16_t     = uint16_t;
+using eint16_t      = int16_t;
+using euint32_t     = uint32_t;
+using eint32_t      = int32_t;
+using euint64_t     = uint64_t;
+using eint64_t      = int64_t;
+using efloat_t      = float;
+using eboolean_t    = bool;
+
+
 #define DebugVar(var)
 #define DebugVarln(var)
 #define Debug(...)
 #define Debugln(...)
-void debugByte(uint8_t b)
-{
-}
-void debugBytes(uint8_t* b, size_t count)
-{
-}
-
+#define debugByte(b)
+#define debugBytes(b, c)
 #endif // ARDUINO
 
 

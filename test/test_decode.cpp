@@ -183,7 +183,6 @@ void test_commandManagerManageFunction(void)
     msg.concat(cmdMan->status());
     TEST_MESSAGE(msg.c_str());
     TEST_ASSERT_TRUE_MESSAGE(res, msg.c_str());
-
     TEST_ASSERT_TRUE_MESSAGE(manageTest, "Send callback was not called");
 
 }
