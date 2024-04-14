@@ -1,6 +1,6 @@
 {
     "name": "capra_micro_comm",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "This is a very basic implementation of a Remote Procedure Call (RPC) designed to be platform independant and interface independant.",
     "keywords": "rpc, capra, communication, remote",
     "repository":
@@ -19,7 +19,6 @@
     "license": "MIT",
     "homepage": "https://github.com/clubcapra/capra_micro_comm",
     "dependencies": {
-      "densaugeo/base64" : "^1.4.0"
     },
     "frameworks": "*",
     "platforms": "*"
