@@ -13,7 +13,7 @@ struct DataHook
     T decode() const;
 
     template <typename T>
-    void encode(const T& value);
+    void encode(T value);
 };
 
 template <typename T>
@@ -24,7 +24,7 @@ inline T DataHook::decode() const
 }
 
 template <typename T>
-inline void DataHook::encode(const T &value)
+inline void DataHook::encode(T value)
 {
     const T *ref = &value;
     const uint8_t *val = reinterpret_cast<const uint8_t *>(ref);
