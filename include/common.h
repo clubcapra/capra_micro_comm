@@ -80,13 +80,14 @@ using eint64_t      = int64_t;
 using efloat_t      = float;
 using eboolean_t    = bool;
 
-
 #define DebugVar(var)
 #define DebugVarln(var)
 #define Debug(...)
 #define Debugln(...)
 #define debugByte(b)
 #define debugBytes(b, c)
+
+typedef uint32_t size_t;
 #endif // ARDUINO
 
 
