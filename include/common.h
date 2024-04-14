@@ -87,7 +87,7 @@ using eboolean_t    = bool;
 #define debugByte(b)
 #define debugBytes(b, c)
 
-typedef uint32_t size_t;
+#include <stddef.h>
 #endif // ARDUINO
 
 
