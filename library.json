@@ -19,6 +19,7 @@
     "license": "MIT",
     "homepage": "https://github.com/clubcapra/capra_micro_comm",
     "dependencies": {
+      "densaugeo/base64" : "^1.4.0"
     },
     "frameworks": "*",
     "platforms": "*"
