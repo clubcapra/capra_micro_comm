@@ -1,4 +1,5 @@
 #include "Buffer.h"
+#include "algorithm"
 
 Buffer::Buffer(size_t size)
 {
@@ -28,7 +29,7 @@ size_t Buffer::write(uint8_t b)
 
 size_t Buffer::write(uint8_t *b, size_t length)
 {
-    size_t l = min(length, availableForWrite());
+    size_t l = GMin(length, availableForWrite());
     for (size_t i = 0; i < l; ++i)
     {
         *mTail = *(b+i);
@@ -57,7 +58,7 @@ int Buffer::read()
 
 size_t Buffer::read(uint8_t *b, size_t length)
 {
-    size_t l = min(length, available());
+    size_t l = GMin(length, available());
     for (size_t i = 0; i < l; ++i)
     {
         *(b+i) = *mHead;

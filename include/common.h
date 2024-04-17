@@ -68,6 +68,8 @@ inline void debugBytes(uint8_t* b, size_t count)
     }
     debug.println();
 }
+
+#define GMin(x, y) (min(x,y))
 #else 
 using euint8_t      = uint8_t;
 using eint8_t       = int8_t;
@@ -88,6 +90,9 @@ using eboolean_t    = bool;
 #define debugBytes(b, c)
 
 #include <stddef.h>
+#include "algorithm"
+#define GMin(x, y) (std::min(x,y))
+
 #endif // ARDUINO
 
 
