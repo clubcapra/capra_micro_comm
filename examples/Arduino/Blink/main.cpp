@@ -24,22 +24,22 @@ Status ledOff(Void _)
     return {};
 }
 
-Status setLedState(State s)
+Status setLedState(Bool_ s)
 {
-    if (s.state) return ledOn(Void{});
+    if (s.b) return ledOn(Void{});
     else return ledOff(Void{});
 }
 
-UInt8 loopback(UInt8 s)
+Byte loopback(Byte s)
 {
     digitalWrite(LED_BUILTIN, 0);
     delay(100);
     digitalWrite(LED_BUILTIN, 1);
-    DebugVarln(s.value);
-    return {s.value + 1};
+    DebugVarln(s.b);
+    return {s.b + 1};
 }
 
-State patate(Status s)
+Bool_ patate(Status s)
 {
     return {s.statusCode == 0};
 }

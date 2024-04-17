@@ -129,40 +129,20 @@ struct Config
 static_assert(sizeof(Config) == 40);
 
 // --- COMMANDS ---
-Bool_ setLedColor(LED);
-static_assert((sizeof(LED)+1) == 7);
+Status ledOn(Void);
+Status ledOff(Void);
+Status setLedState(Bool_);
+Byte loopback(Byte);
+Bool_ patate(Status);
 
-Bool_ setFrontLedState(Bool_);
-static_assert((sizeof(Bool_)+1) == 2);
-
-Bool_ setBackLedState(Bool_);
-static_assert((sizeof(Bool_)+1) == 2);
-
-Bool_ setTPVPosition(Vector2D);
-static_assert((sizeof(Vector2D)+1) == 9);
-
-Vector2D getTPVPosition(Void);
-static_assert((sizeof(Void)+1) == 2);
-
-Bool_ setTPVSpeed(Vector2D);
-static_assert((sizeof(Vector2D)+1) == 9);
-
-Report getReport(Void);
-static_assert((sizeof(Void)+1) == 2);
-
-Bool_ setConfig(Config);
-static_assert((sizeof(Config)+1) == 41);
 
 BaseFunction_ptr commands[] = {
-    new Function<Bool_, LED>(&setLedColor),
-    new Function<Bool_, Bool_>(&setFrontLedState),
-    new Function<Bool_, Bool_>(&setBackLedState),
-    new Function<Bool_, Vector2D>(&setTPVPosition),
-    new Function<Vector2D, Void>(&getTPVPosition),
-    new Function<Bool_, Vector2D>(&setTPVSpeed),
-    new Function<Report, Void>(&getReport),
-    new Function<Bool_, Config>(&setConfig),
+    new Function<Status, Void>(&ledOn),
+    new Function<Status, Void>(&ledOff),
+    new Function<Status, Bool_>(&setLedState),
+    new Function<Byte, Byte>(&loopback),
+    new Function<Bool_, Status>(&patate),
 };
-#define COMMANDS_COUNT 8
+#define COMMANDS_COUNT 5
 #define MAX_DECODED_SIZE 41
 #define MAX_ENCODED_SIZE 57

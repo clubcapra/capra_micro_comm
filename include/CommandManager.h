@@ -4,6 +4,7 @@
 #include <DataHook.h>
 #include <Lock.h>
 #include <Function.h>
+#include <Buffer.h>
 
 class _CommandManager
 {
@@ -13,8 +14,11 @@ public:
     enum StatusCode
     {
         NONE,
-        LOCK_ACQUIRE_FAILED,
         CMD_ID_OUT_OF_RANGE,
+        PEEK_ID_ERROR,
+        READ_ID_ERROR,
+        READ_PARAM_ERROR,
+        PARAM_SIZE_MISMATCH,
         CALLBACK_NULL,
     };
 private:
@@ -22,7 +26,6 @@ private:
     const size_t mInputBufferLength;
     uint8_t* mOutputBuffer;
     const size_t mOutputBufferLength;
-    Lock mLock;
     size_t mCommandsCount;
     BaseFunction_ptr* mCommands;
     sendCB_t mSendCB;
@@ -32,25 +35,16 @@ public:
 
     _CommandManager(size_t inBufferLength, size_t outBufferLength);
 
-    Lock& getLock();
-
     StatusCode status();
 
     bool handleCommand(const uint8_t *buffer, size_t length);
+
+    bool handleCommand(Buffer& buff);
 
     void setSendCB(sendCB_t cb);
 
     void setCommands(BaseFunction_ptr* commands, size_t length);
 
-    // template <size_t SIZE>
-    // void setCommands(BaseFunction_ptr (&commands)[SIZE]);
-
     ~_CommandManager();
 };
 
-// template <size_t SIZE>
-// inline void _CommandManager::setCommands(BaseFunction_ptr (&commands)[SIZE])
-// {
-//     mCommandsCount = SIZE;
-//     mCommands = commands;
-// }

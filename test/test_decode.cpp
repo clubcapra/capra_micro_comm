@@ -1,23 +1,26 @@
 #include "unity.h"
 #include "capra_comm.h"
+#include "Buffer.h"
 
 #define TEST_BUFFER_SIZE 64
-uint8_t* inputBuffer;
-uint8_t* outputBuffer;
+uint8_t* inputBuffer = new uint8_t[TEST_BUFFER_SIZE];
+uint8_t* outputBuffer = new uint8_t[TEST_BUFFER_SIZE];
 _CommandManager* cmdMan = &CommandManager;
+// _CommandManager* cmdMan;
+Serial_& debug = SerialUSB;
 
 void setUp()
 {
-    inputBuffer = new uint8_t[TEST_BUFFER_SIZE];
-    outputBuffer = new uint8_t[TEST_BUFFER_SIZE];
+    Debugln("SetUp start");
     // cmdMan = new _CommandManager(TEST_BUFFER_SIZE, TEST_BUFFER_SIZE);
+    Debugln("SetUp end");
 }
 
 void tearDown()
 {
-    delete[] inputBuffer;
-    delete[] outputBuffer;
+    Debugln("tearDown start");
     // delete cmdMan;
+    Debugln("tearDown end");
 }
 
 
@@ -152,13 +155,14 @@ void test_simpleEncoding(void)
     TEST_ASSERT_EQUAL_INT32(5, res.id);
 }
 
-bool manageTest = false;
+volatile bool manageTest = false;
 void sendCB(uint8_t* buff, size_t length)
 {
     DataHook hook = DataHook(buff, length);
     auto result = hook.decode<ExampleReturn>();
     TEST_ASSERT_TRUE(result.success);
     TEST_ASSERT_EQUAL_FLOAT(2.5f, result.result);
+    Debugln("CB called");
     manageTest = true;
 }
 
@@ -177,6 +181,7 @@ void test_commandManagerManageFunction(void)
         5, 0, 0, 0,
     };
 
+    manageTest = false;
     bool res = cmdMan->handleCommand(encodedCmd, sizeof(encodedCmd));
 
     String msg = String("Failed to handle! Status code: ");
@@ -187,6 +192,97 @@ void test_commandManagerManageFunction(void)
 
 }
 
+void test_commandManagerManageFunctionB(void)
+{
+    // _CommandManager* cmd = new _CommandManager(TEST_BUFFER_SIZE, TEST_BUFFER_SIZE);
+    _CommandManager* cmd = cmdMan;
+    cmd->setSendCB(&sendCB);
+
+    BaseFunction_ptr funcs[] = 
+    {
+        new Function<ExampleReturn, ExampleParameter>(&myFunc),
+    };
+    cmd->setCommands(funcs, 1);
+
+    Buffer b = Buffer(10);
+    
+    b.write(0);
+
+    uint8_t encoded[] = {
+        5, 0, 0, 0,
+    };
+    b.write(encoded, 4);
+
+    String msg = String("Cmd: ");
+    msg.concat(b.peek());
+
+    manageTest = false;
+    bool res = cmd->handleCommand(b);
+    msg.concat(" | Failed to handle! Status code: ");
+    msg.concat(cmd->status());
+    TEST_ASSERT_TRUE_MESSAGE(res, msg.c_str());
+    TEST_ASSERT_TRUE_MESSAGE(manageTest, "Send callback was not called");
+
+    Debugln("Done");
+
+}
+
+#define TEST_ASSERT_BUFF_SIZE(buff, written) TEST_ASSERT_EQUAL(TEST_BUFFER_SIZE - written, buff.availableForWrite()); \
+    TEST_ASSERT_EQUAL(written, b.available())
+
+void test_bufferOperations(void)
+{
+    Buffer b(TEST_BUFFER_SIZE);
+    TEST_ASSERT_EQUAL(-1, b.peek());
+    TEST_ASSERT_BUFF_SIZE(b, 0);
+
+    size_t w = b.write(50);
+    TEST_ASSERT_EQUAL(50, b.peek());
+    TEST_ASSERT_EQUAL(1, w);
+    TEST_ASSERT_BUFF_SIZE(b, 1);
+
+    uint8_t v = b.read();
+    TEST_ASSERT_EQUAL(-1, b.peek());
+    TEST_ASSERT_EQUAL(50, v);
+    TEST_ASSERT_BUFF_SIZE(b, 0);
+
+    int r = b.read();
+    TEST_ASSERT_EQUAL(-1, b.peek());
+    TEST_ASSERT_EQUAL(-1, r);
+    TEST_ASSERT_BUFF_SIZE(b, 0);
+
+    uint8_t batch[8] = {1,2,3,4,5,6,7};
+    
+    for (size_t i = 0; i < 8; ++i)
+    {
+        w+=b.write(batch, 8);
+    }
+    TEST_ASSERT_EQUAL(1, b.peek());
+    TEST_ASSERT_BUFF_SIZE(b, TEST_BUFFER_SIZE);
+    size_t ww = b.write(batch, 8);
+    TEST_ASSERT_EQUAL(0, ww);
+    TEST_ASSERT_BUFF_SIZE(b, TEST_BUFFER_SIZE);
+    
+    for (size_t i = TEST_BUFFER_SIZE; i > 0 ; i -= 8)
+    {
+        uint8_t rd[8] = {0};
+        TEST_ASSERT_BUFF_SIZE(b, i);
+        size_t rr =b.read(rd, 8);
+        TEST_ASSERT_EQUAL(8, rr);
+    }
+    TEST_ASSERT_EQUAL(-1, b.peek());
+    TEST_ASSERT_BUFF_SIZE(b, 0);
+    uint8_t rf[8] = {0};
+    size_t rff = b.read(rf, 8);
+    TEST_ASSERT_EQUAL(-1, b.peek());
+    TEST_ASSERT_EQUAL(0, rff);
+
+    b.write(6);
+    b.write(batch, 8);
+    TEST_ASSERT_BUFF_SIZE(b, 9);
+    TEST_ASSERT_EQUAL(6, b.peek());
+}
+
 int runUnityTests(void) 
 {
     UNITY_BEGIN();
@@ -195,7 +291,10 @@ int runUnityTests(void)
     RUN_TEST(test_functionRun);
     // RUN_TEST(test_commandManagerLock);
     RUN_TEST(test_simpleEncoding);
-    // RUN_TEST(test_commandManagerManageFunction);
+    RUN_TEST(test_bufferOperations);
+    RUN_TEST(test_commandManagerManageFunction);
+    RUN_TEST(test_commandManagerManageFunctionB);
+    Debugln("Tests end");
     return UNITY_END();
 }
 
@@ -205,6 +304,9 @@ int runUnityTests(void)
   */
 void setup() 
 {
+    #ifdef SAM
+    debug.begin(9600);
+    #endif
     // Wait ~2 seconds before the Unity test runner
     // establishes connection with a board Serial interface
     delay(2000);
