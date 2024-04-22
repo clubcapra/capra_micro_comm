@@ -34,8 +34,8 @@ public:
 };
 
 #ifndef SAM
-    extern EmptyStream debug = EmptyStream();
-    extern Serial_& comm = Serial
+    extern EmptyStream debug;
+    extern HardwareSerial& comm;
 #else
     extern Serial_& debug;
     extern UARTClass& comm;
