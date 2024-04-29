@@ -1,5 +1,4 @@
 #include "Buffer.h"
-#include "algorithm"
 
 Buffer::Buffer(size_t size)
 {

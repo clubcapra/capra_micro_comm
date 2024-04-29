@@ -6,8 +6,14 @@
 uint8_t* inputBuffer = new uint8_t[TEST_BUFFER_SIZE];
 uint8_t* outputBuffer = new uint8_t[TEST_BUFFER_SIZE];
 _CommandManager* cmdMan = &CommandManager;
-// _CommandManager* cmdMan;
-Serial_& debug = SerialUSB;
+
+#ifndef SAM
+    EmptyStream debug = EmptyStream();
+    HardwareSerial& comm = Serial;
+#else
+    Serial_& debug = SerialUSB;
+    UARTClass& comm = Serial;
+#endif
 
 void setUp()
 {
