@@ -34,8 +34,8 @@ public:
 };
 
 #ifndef SAM
-    extern EmptyStream debug;
-    extern HardwareSerial& comm;
+    extern EmptyStream debug = EmptyStream();
+    extern Serial_& comm = Serial
 #else
     extern Serial_& debug;
     extern UARTClass& comm;
@@ -90,12 +90,23 @@ using eboolean_t    = bool;
 #define debugBytes(b, c)
 
 #include <stddef.h>
-#include "algorithm"
+#include <algorithm>
 #define GMin(x, y) (std::min(x,y))
 
 #endif // ARDUINO
 
+#if defined(__EXCEPTIONS)
 
+#include <exception>
+#include <stdexcept>
+#define THROW_EXCEPTION(exc) throw exc
+
+#else
+
+// Define empty if not supported
+#define THROW_EXCEPTION(exc)
+
+#endif // __EXCEPTIONS
 
 // Verify type lengths
 static_assert(sizeof(uint8_t)       == 1);

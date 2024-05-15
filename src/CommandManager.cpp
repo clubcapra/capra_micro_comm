@@ -23,6 +23,7 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
     if (cmdID >= mCommandsCount) 
     {
         mStatusCode = StatusCode::CMD_ID_OUT_OF_RANGE;
+        THROW_EXCEPTION(CommandIDOutOfRangeException(cmdID));
         return false;
     }
 
@@ -30,6 +31,7 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
     if (mCommands[cmdID]->paramSize() > length-1)
     {
         mStatusCode = StatusCode::PARAM_SIZE_MISMATCH;
+        THROW_EXCEPTION(ParamSizeMismatchException(mCommands[cmdID]->paramSize(), length-1));
         return false;
     }
 
@@ -51,6 +53,7 @@ bool _CommandManager::handleCommand(const uint8_t *buffer, size_t length)
     if (mSendCB == nullptr) 
     {
         mStatusCode = StatusCode::CALLBACK_NULL;
+        THROW_EXCEPTION(CallbackNullException());
         return false;
     }
     mSendCB(output.buffer, output.length);
@@ -85,6 +88,7 @@ bool _CommandManager::handleCommand(Buffer& buff)
     if (cmdID == -1)
     {
         mStatusCode = StatusCode::PEEK_ID_ERROR;
+        THROW_EXCEPTION(PeekIDException());
         return false;
     }
 
@@ -92,6 +96,7 @@ bool _CommandManager::handleCommand(Buffer& buff)
     if (cmdID >= (int)mCommandsCount) 
     {
         mStatusCode = StatusCode::CMD_ID_OUT_OF_RANGE;
+        THROW_EXCEPTION(CommandIDOutOfRangeException(cmdID));
         return false;
     }
     BaseFunction* func = mCommands[cmdID];
@@ -99,9 +104,10 @@ bool _CommandManager::handleCommand(Buffer& buff)
     DebugVarln(func->returnSize());
 
     // Verify length
-    if (func->paramSize() + 1 > buff.available())
+    if (func->paramSize() > buff.available() - 1)
     {
         mStatusCode = StatusCode::PARAM_SIZE_MISMATCH;
+        THROW_EXCEPTION(ParamSizeMismatchException(func->paramSize(), buff.available() - 1));
         return false;
     }
 
@@ -110,6 +116,7 @@ bool _CommandManager::handleCommand(Buffer& buff)
     if (r == -1)
     {
         mStatusCode = StatusCode::READ_ID_ERROR;
+        THROW_EXCEPTION(ReadIDException());
         return false;
     }
     DebugVarln(r);
@@ -120,6 +127,7 @@ bool _CommandManager::handleCommand(Buffer& buff)
     if (rr != func->paramSize())
     {
         mStatusCode = StatusCode::READ_PARAM_ERROR;
+        THROW_EXCEPTION(ReadParamException());
         return false;
     }
 
@@ -137,6 +145,7 @@ bool _CommandManager::handleCommand(Buffer& buff)
     if (mSendCB == nullptr) 
     {
         mStatusCode = StatusCode::CALLBACK_NULL;
+        THROW_EXCEPTION(CallbackNullException());
         return false;
     }
 
