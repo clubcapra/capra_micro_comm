@@ -21,6 +21,7 @@ using eboolean_t    = bool;
 
 #include <Arduino.h>
 
+
 class EmptyStream : public Stream
 {
 public:
@@ -33,41 +34,47 @@ public:
     operator bool() {return true;}
 };
 
-#ifndef SAM
-    extern EmptyStream debug = EmptyStream();
-    extern Serial_& comm = Serial
-#else
-    extern Serial_& debug;
-    extern UARTClass& comm;
-#endif
+// #ifndef SAM
+//     extern EmptyStream debug = EmptyStream();
+// #else
+//     extern Serial_& debug;
+//     extern UARTClass& comm;
+// #endif
 
-#define DebugVar(var) { debug.print(#var); debug.print(": "); debug.print(var); }
-#define DebugVarln(var) { debug.print(#var); debug.print(": "); debug.println(var); }
-#define Debug(...) debug.print(__VA_ARGS__)
-#define Debugln(...) debug.println(__VA_ARGS__)
+// #define DebugVar(var) { debug.print(#var); debug.print(": "); debug.print(var); }
+// #define DebugVarln(var) { debug.print(#var); debug.print(": "); debug.println(var); }
+// #define Debug(...) debug.print(__VA_ARGS__)
+// #define Debugln(...) debug.println(__VA_ARGS__)
 
 
-inline void debugByte(uint8_t b)
-{
-    debug.print(b, 2);
-    debug.print('|');
-}
+// inline void debugByte(uint8_t b)
+// {
+//     debug.print(b, 2);
+//     debug.print('|');
+// }
 
-inline void debugBytes(uint8_t* b, size_t count)
-{
-    for (uint8_t* bb = b; bb < b + count; ++bb)
-    {
-        debug.print(*bb, 2);
-        debug.print('|');
-    }
-    debug.println();
-    for (uint8_t* bb = b; bb < b + count; ++bb)
-    {
-        debug.print(*bb, 16);
-        debug.print('|');
-    }
-    debug.println();
-}
+// inline void debugBytes(uint8_t* b, size_t count)
+// {
+//     for (uint8_t* bb = b; bb < b + count; ++bb)
+//     {
+//         debug.print(*bb, 2);
+//         debug.print('|');
+//     }
+//     debug.println();
+//     for (uint8_t* bb = b; bb < b + count; ++bb)
+//     {
+//         debug.print(*bb, 16);
+//         debug.print('|');
+//     }
+//     debug.println();
+// }
+
+#define DebugVar(var)
+#define DebugVarln(var)
+#define Debug(...)
+#define Debugln(...)
+#define debugByte(b)
+#define debugBytes(b, c)
 
 #define GMin(x, y) (min(x,y))
 #else 
@@ -95,18 +102,18 @@ using eboolean_t    = bool;
 
 #endif // ARDUINO
 
-#if defined(__EXCEPTIONS)
+// #if defined(__EXCEPTIONS)
 
-#include <exception>
-#include <stdexcept>
-#define THROW_EXCEPTION(exc) throw exc
+// #include <exception>
+// #include <stdexcept>
+// #define THROW_EXCEPTION(exc) throw exc
 
-#else
+// #else
 
-// Define empty if not supported
+// // Define empty if not supported
+
+// #endif // __EXCEPTIONS
 #define THROW_EXCEPTION(exc)
-
-#endif // __EXCEPTIONS
 
 // Verify type lengths
 static_assert(sizeof(uint8_t)       == 1);
